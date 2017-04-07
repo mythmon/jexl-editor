@@ -1,0 +1,16 @@
+* {
+  box-model: border-box;
+}
+
+.editor {
+  display: flex;
+  margin: 20px 0;
+}
+
+.token {
+  border: 1px solid black;
+  padding: 2px;
+  margin-right: 2px;
+  min-width: 1em;
+  text-align: center;
+}
