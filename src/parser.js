@@ -2,17 +2,9 @@ import SpanMap from './SpanMap.js'
 import {nextId} from './utils.js'
 
 export class TokenSet {
-  constructor ({input, tokens}) {
-    if (input === undefined && tokens === undefined) {
-      throw new Error('Must pass either input or tokens')
-    }
-    if (tokens) {
-      this.tokens = tokens
-      this.content = unparse(tokens)
-    } else {
-      this.tokens = parse(input)
-      this.content = input
-    }
+  constructor (input) {
+    this.tokens = parse(input)
+    this.content = input
   }
 
   withTokenContent (id, newContent) {
@@ -24,7 +16,7 @@ export class TokenSet {
         newTokens.push(token)
       }
     }
-    return new TokenSet({tokens: newTokens})
+    return new TokenSet(unparse(newTokens))
   }
 
   map (func) {
@@ -32,10 +24,18 @@ export class TokenSet {
   }
 }
 
+class Node {
+  constructor ({root = false, children = []}) {
+    this.root = root
+    this.children = children
+  }
+}
+
 export function parse (input) {
   const tokenizer = new Tokenizer()
-  tokenizer.addRule('char', /\d+/)
-  tokenizer.addRule('char', /[\s\S]/)
+  tokenizer.addRule('number', /-?\d+(\.\d*)?/)
+  tokenizer.addRule('operator', /[+*/-]/)
+  tokenizer.addRule('whitespace', /\s/, {skip: true})
   return tokenizer.tokenize(input)
 }
 
@@ -51,10 +51,6 @@ export function unparse (tokens) {
 
 class Token {
   constructor ({type, span, content}) {
-    const spanLength = span[1] - span[0]
-    if (content.length !== spanLength) {
-      throw new Error(`Not implemented: no support for mismatched token sizes. Span is ${spanLength}, content is ${content.length}`)
-    }
     this.id = nextId()
     this.type = type
     this.span = span
@@ -75,9 +71,9 @@ class Tokenizer {
     this.rules = []
   }
 
-  addRule (type, baseRegex) {
+  addRule (type, baseRegex, {skip = false} = {}) {
     const regex = new RegExp('^(' + baseRegex.source + ')(.*)')
-    const rule = {regex, type}
+    const rule = {regex, type, skip}
     this.rules.push(rule)
   }
 
@@ -92,14 +88,16 @@ class Tokenizer {
     let partialInput = input
     while (partialInput !== '') {
       let matched = false
-      for (const {regex, type} of this.rules) {
+      for (const {regex, type, skip} of this.rules) {
         const match = partialInput.match(regex)
         if (match) {
           const content = match[1]
           const span = [left, left + content.length]
           left = span[1]
-          tokens.push(new Token({type, content, span}))
-          partialInput = match[2]
+          if (!skip) {
+            tokens.push(new Token({type, content, span}))
+          }
+          partialInput = match[match.length - 1]
           matched = true
           break
         }
@@ -109,6 +107,6 @@ class Tokenizer {
       }
     }
 
-    return tokens.filter(token => token.content.trim() !== '')
+    return tokens
   }
 }

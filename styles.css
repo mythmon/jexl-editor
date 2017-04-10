@@ -13,4 +13,14 @@
   margin-right: 2px;
   min-width: 1em;
   text-align: center;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.token > input {
+  width: 40px;
+}
+
+.token > .type {
+  font-size: 0.8em;
 }

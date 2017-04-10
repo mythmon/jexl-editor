@@ -35,15 +35,14 @@ export default class SpanMap {
     // put them in their places
     const lastSpan = spans[spans.length - 1]
     const buffer = Array(lastSpan[1])
+    let offset = 0
 
     for (let span of spans) {
       const text = this.bits.get(span)
-      if (text.length !== (span[1] - span[0])) {
-        throw new Error('Assertion error: wrong length spans not supported')
-      }
       for (let i = 0; i < text.length; i++) {
-        buffer[i + span[0]] = text[i]
+        buffer[i + span[0] + offset] = text[i]
       }
+      offset += text.length - (span[1] - span[0])
     }
 
     for (let i = 0; i < buffer.length; i++) {

@@ -1,6 +1,5 @@
 import '../node_modules/react/dist/react.js' /* global React */
 
-import ContentEditable from './ContentEditable.js'
 import {TokenSet} from './parser.js'
 
 const {Component, PropTypes: pt} = React
@@ -9,14 +8,14 @@ export default class JEXLEditor extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      tokenSet: new TokenSet({input: ''})
+      tokenSet: new TokenSet('')
     }
     this.handleInput = this.handleInput.bind(this)
   }
 
   handleInput ({target: {value}}) {
     this.setState({
-      tokenSet: new TokenSet({input: value})
+      tokenSet: new TokenSet(value)
     })
   }
 
@@ -36,13 +35,12 @@ export default class JEXLEditor extends Component {
           <textarea onChange={this.handleInput} value={tokenSet.content} />
         </div>
         <div className="editor">
-          {tokenSet.map((token, i) => {
-            const onChange = this.makeTokenOnChange(token.id)
-            return <Token key={`token-${i}`} token={token} onChange={onChange} />
-          })}
-        </div>
-        <div>
-          {tokenSet.content}
+          {tokenSet.error
+           ? <span className="error">Syntax error {tokenSet.error.toString()}</span>
+           : tokenSet.map((token, i) => {
+             const onChange = this.makeTokenOnChange(token.id)
+             return <Token key={`token-${i}`} token={token} onChange={onChange} />
+           })}
         </div>
       </div>
     )
@@ -63,7 +61,8 @@ class Token extends Component {
     const {token} = this.props
     return (
       <span className="token">
-        <ContentEditable html={token.content} onChange={this.handleInput} />
+        <input value={token.content} onChange={this.handleInput} />
+        <span className="type">{token.type}</span>
       </span>
     )
   }
