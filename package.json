@@ -1,24 +1,24 @@
 {
   "scripts": {
-    "build": "babel src -d dist",
-    "watch": "babel src -d dist --watch --retain-lines",
-    "serve": "http-server -a 127.0.0.1"
+    "build": "webpack",
+    "dev": "webpack-dev-server"
   },
   "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
     "babel-preset-react": "^6.23.0",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^2.2.0"
+    "eslint-plugin-react": "^6.10.3",
+    "eslint-plugin-standard": "^2.2.0",
+    "webpack": "^2.3.3",
+    "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
-    "babel-cli": "^6.24.0",
-    "eslint-plugin-react": "^6.10.3",
-    "http-server": "^0.9.0",
     "react": "^15.4.2",
-    "react-contenteditable": "^2.0.2",
     "react-dom": "^15.4.2"
   }
 }

@@ -1,8 +1,6 @@
-import '../node_modules/react/dist/react.js' /* global React */
+import React, {Component, PropTypes as pt} from 'react'
 
 import {TokenSet} from './parser.js'
-
-const {Component, PropTypes: pt} = React
 
 export default class JEXLEditor extends Component {
   constructor (props) {

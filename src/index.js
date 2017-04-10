@@ -1,5 +1,5 @@
-import '../node_modules/react/dist/react.js' /* global React */
-import '../node_modules/react-dom/dist/react-dom.js' /* global ReactDOM */
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 import JEXLEditor from './JEXLEditor.js'
 
